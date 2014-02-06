@@ -5,7 +5,7 @@ app.controller('MainCtrl', function($scope) {
     
     { key : "help" , en : "Help" , he: "עזרה"},
     { key : "want" , en : "Want" , he: "רוצה"},
-    { key : "email" , en : "Email" , he: "אימייל"}
+    { key : "email" , en : "Email" }
   ]
 
   $scope.user = "Ilan Frumer";

@@ -9,7 +9,8 @@
   var PRISTINE_CLASS = 'ng-pristine',
       DIRTY_CLASS = 'ng-dirty';
 
-  var noop = angular.noop;
+  var noop = angular.noop,
+      isUndefined = angular.isUndefined;
 
   var nullFormCtrl = {
     $addControl: noop,
@@ -99,9 +100,6 @@
             var ngModel = ctrl[0],
                 parentForm = ctrl[1] || nullFormCtrl;
 
-            // var parentForm = element.inheritedData('$formController');
-            ngModel.$pristineValue = null;
-
             // new method
 
             ngModel.$updatePristine = function() {
@@ -132,7 +130,11 @@
                 value = fn(value);
               });
 
+
               if (ngModel.$modelValue !== value) {
+
+
+                ngModel.$modelValue = value;
 
                 if (ngModel.$dirty) {
 
@@ -141,17 +143,18 @@
                     ngModel.$setPristine();
                     ngModel.$updatePristine();
                   }
+                
                 } else {
 
-                  // change to dirty
-                  ngModel.$pristineValue = ngModel.$modelValue;
-                  ngModel.$dirty = true;
-                  ngModel.$pristine = false;
-                  element.removeClass(PRISTINE_CLASS).addClass(DIRTY_CLASS);
-                  parentForm.$setDirty();
+                  if(ngModel.$pristineValue !== value) {
+                    // change to dirty
+                    ngModel.$dirty = true;
+                    ngModel.$pristine = false;
+                    element.removeClass(PRISTINE_CLASS).addClass(DIRTY_CLASS);
+                    parentForm.$setDirty();
+                  }
                 }
 
-                ngModel.$modelValue = value;
                 ngModelSet(scope, value);
                 angular.forEach(ngModel.$viewChangeListeners, function(listener) {
                   try {
@@ -163,10 +166,11 @@
               }
             };
             
-            ngModel.$formatters.push = function initPristine(value){
-              ngModel.$pristineValue = ngModel.$modelValue;
+            ngModel.$formatters.push(function initPristine(value){
+
+              ngModel.$pristineValue = isUndefined(ngModel.$modelValue) ? '' : ngModel.$modelValue;
               return value;
-            };
+            });
           }
         };
       }
