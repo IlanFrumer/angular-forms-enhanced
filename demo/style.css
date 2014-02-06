@@ -1,5 +1,16 @@
-/* Put your css in here */
+body{
+  color: #333;
+}
 
+.title {
+  text-align: center;
+  text-decoration: underline;
+}
+
+.title h1{
+  font-weight: bolder;
+  text-shadow: 3px 2px 5px #999;
+}
 
 tr.ng-pristine{
    background: #eee;
@@ -25,4 +36,16 @@ tr:last-of-type{
 
 .rtl {
   direction: rtl !important;
+}
+
+.input-group {
+  /*width: 100%;*/
+}
+
+h3{
+  font-style: italic;
+}
+
+table {
+  table-layout:fixed;
 }

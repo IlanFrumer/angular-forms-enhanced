@@ -14,35 +14,68 @@
   </head>
 
   <body ng-controller="MainCtrl">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="title">
+            <h1>Angular forms enhanced!</h1>
+          </div>
+          <h3>Plain input:</h3>
+          <div class="input-group">
+            <input type="text" 
+                   ng-model="user"
+                   class="form-control">
+          </div>
+          <hr>      
+          <h3>Input with form ($revert):</h3>
+          <div>
+            <div class="input-group" ng-form="oneForm">
+              <input type="text" 
+                     name="person"
+                     ng-model="person"
+                     class="form-control">
+              <span class="input-group-btn">
+                <button ng-click="oneForm.$revert()"
+                        class="btn btn-default">Revert</button>
+              </span>
+            </div>    
+          </div>
+          <hr>          
+          <h3>Nested forms with contenteditable:</h3>
+          <table class="table table-bordered" ng-form="itemsForm">
+            <tr>
+              <th>key</th>
+              <th>english</th>
+              <th>hebrew</th>
+            </tr>
+            <tr ng-repeat="item in list track by item.key" ng-form="itemForm">
+              <td contenteditable ng-model="item.key" name="key"></td>
+              <td contenteditable ng-model="item.en" name="en"></td>
+              <td contenteditable ng-model="item.he" name="he" class="rtl"></td>
+              <td>
+                <button ng-disabled="itemForm.$pristine" 
+                        ng-click="itemForm.$revert()" class="btn btn-primary">Revert</button>              
+                <button ng-disabled="itemForm.$pristine" 
+                        ng-click="save(item, itemForm)" class="btn btn-primary">save</button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" style="width:81%"></td>
+              <td>
+                 <button ng-disabled="itemsForm.$pristine"
+                         ng-click="itemsForm.$revert()" 
+                         class="btn btn-primary">revert all</button>
 
-    <h3>Plain input:</h3>
-    <input type="text" ng-model="user" ng-init="user= 'ilan'">
-    <hr>
-    <h3>Nested forms:</h3>
-    <table class="table table-bordered" ng-form="itemsForm">
-      <tr>
-        <th>key</th>
-        <th>english</th>
-        <th>hebrew</th>
-      </tr>
-      <tr ng-repeat="item in list track by item.key" ng-form="itemForm">
-        <td contenteditable ng-model="item.key" name="key"></td>
-        <td contenteditable ng-model="item.en" name="en"></td>
-        <td contenteditable ng-model="item.he" name="he" class="rtl"></td>
-        <td>
-          <button ng-disabled="itemForm.$pristine" 
-                  ng-click="save(item, itemForm)" class="btn btn-primary">save</button>
-        </td>
-      </tr>
-    <tr>
-      <td colspan="3"></td>
-      <td>
-         <button ng-disabled="itemsForm.$pristine"
-                 ng-click="saveAll(itemsForm)" class="btn btn-primary">save all</button>
-      </td>
-    </tr>
-    </table>
-  <hr/>
+                 <button ng-disabled="itemsForm.$pristine"
+                         ng-click="saveAll(itemsForm)" 
+                         class="btn btn-primary">save all</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      <hr/>
+    </div>
+  </div>
   </body>
 
 </html>

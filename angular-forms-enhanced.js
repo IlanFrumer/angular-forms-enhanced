@@ -47,7 +47,20 @@
                 }
                 $removeControl(control);
               };
-              
+
+              // new method
+              form.$revert = function () {
+                for (var i = 0; i < form.$controls.length; i+=1) {
+                  if (form.$controls[i].$dirty) {
+                    form.$controls[i].$revert();
+                  }
+                }
+                form.$setPristine();
+                form.$updatePristine();
+              };
+                
+              // new method
+
               form.$updatePristine = function() {
                 for (var i = 0; i < form.$controls.length; i+=1) {
                   if (form.$controls[i].$dirty) {
@@ -91,18 +104,23 @@
 
             // new method
 
-            if (parentForm) {
-              ngModel.$updatePristine = function() {
-                parentForm.$updatePristine();
-              };
-            }
+            ngModel.$updatePristine = function() {
+              parentForm.$updatePristine();
+            };
+
+            // new method
+
+            ngModel.$revert = function() {
+              ngModel.$setViewValue(ngModel.$pristineValue);
+              ngModel.$render();
+            };
 
             // wrap
             var $setPristine = ngModel.$setPristine;
             
             ngModel.$setPristine = function() {
               $setPristine.call(ngModel);
-              ngModel.$pristineValue = null;
+              ngModel.$pristineValue = ngModel.$viewValue;
             };
 
             // replace with a patched version
@@ -151,6 +169,21 @@
                 });
               }
             };
+            
+
+            // decorating $render
+            var $render = angular.noop;
+            Object.defineProperty(ngModel,'$render',{
+              set: function $renderSetter(fn) {
+                $render = fn;
+              },
+              get: function() {
+                return function $renderGetter() {
+                  ngModel.$pristineValue = ngModel.$viewValue;
+                  $render();
+                };
+              }
+            });
           }
         };
       }

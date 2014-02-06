@@ -7,10 +7,13 @@ app.controller('MainCtrl', function($scope) {
     { key : "want" , en : "Want" , he: "רוצה"},
     { key : "email" , en : "Email" , he: "אימייל"}
   ]
+
+  $scope.user = "Ilan Frumer";
+  $scope.person = "Misko";
   
   $scope.save = function(item, form){
     form.$setPristine();
-    form.$checkPristine();
+    form.$updatePristine();
     console.log("saved all");
   }
 
