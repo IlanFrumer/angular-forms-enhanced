@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html ng-app="demo">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularJS Forms enhanced</title>
+    
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="//code.angularjs.org/1.2.11/angular.js"></script>
+    <script src="../angular-forms-enhanced.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body ng-controller="MainCtrl">
+
+    <h3>Plain input:</h3>
+    <input type="text" ng-model="user" ng-init="user= 'ilan'">
+    <hr>
+    <h3>Nested forms:</h3>
+    <table class="table table-bordered" ng-form="itemsForm">
+      <tr>
+        <th>key</th>
+        <th>english</th>
+        <th>hebrew</th>
+      </tr>
+      <tr ng-repeat="item in list track by item.key" ng-form="itemForm">
+        <td contenteditable ng-model="item.key" name="key"></td>
+        <td contenteditable ng-model="item.en" name="en"></td>
+        <td contenteditable ng-model="item.he" name="he" class="rtl"></td>
+        <td>
+          <button ng-disabled="itemForm.$pristine" 
+                  ng-click="save(item, itemForm)" class="btn btn-primary">save</button>
+        </td>
+      </tr>
+    <tr>
+      <td colspan="3"></td>
+      <td>
+         <button ng-disabled="itemsForm.$pristine"
+                 ng-click="saveAll(itemsForm)" class="btn btn-primary">save all</button>
+      </td>
+    </tr>
+    </table>
+  <hr/>
+  </body>
+
+</html>

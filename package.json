@@ -1,0 +1,12 @@
+{
+  "name": "angular-forms-enhanced",
+  "version": "0.0.1",
+  "description": "Angular.js forms enhanced",
+  "author": "Ilan Frumer",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.3.2",
+    "grunt-contrib-jshint": "~0.8.0"
+  }
+}

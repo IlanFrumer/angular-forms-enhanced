@@ -1,0 +1,28 @@
+/* Put your css in here */
+
+
+tr.ng-pristine{
+   background: #eee;
+}
+
+tr.ng-dirty{
+   background: #ddd;
+}
+
+td,th{
+  text-align: center;
+}
+
+
+input.ng-dirty,
+td.ng-dirty{
+  font-weight: bolder; 
+}
+
+tr:last-of-type{
+  background: #bbb;
+}
+
+.rtl {
+  direction: rtl !important;
+}
