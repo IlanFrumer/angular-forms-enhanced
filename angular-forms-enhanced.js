@@ -111,8 +111,7 @@
             // new method
 
             ngModel.$revert = function() {
-              ngModel.$setViewValue(ngModel.$pristineValue);
-              ngModel.$render();
+              ngModelSet(scope, ngModel.$pristineValue);
             };
 
             // wrap
@@ -120,44 +119,38 @@
             
             ngModel.$setPristine = function() {
               $setPristine.call(ngModel);
-              ngModel.$pristineValue = ngModel.$viewValue;
+              ngModel.$pristineValue = ngModel.$modelValue;
             };
 
-            // replace with a patched version
+            // monkey patching $setViewValue
 
-            ngModel.$setViewValue = function(value) {
+            ngModel. $setViewValue = function(value) {
 
-              // keep state unchanged
-              if (value === ngModel.$viewValue) {
-                return;
-              }
-
-              if (! ngModel.$pristine) {
-  
-                ngModel.$viewValue = value;
-
-                // rollback to pristine
-                if (ngModel.$pristineValue === value) {
-                  ngModel.$setPristine();
-                  ngModel.$updatePristine();
-                }
-              } else {
-
-                // change to dirty
-                ngModel.$pristineValue = ngModel.$viewValue;
-                ngModel.$viewValue = value;
-                ngModel.$dirty = true;
-                ngModel.$pristine = false;
-                element.removeClass(PRISTINE_CLASS).addClass(DIRTY_CLASS);
-                parentForm.$setDirty();
-
-              }
+              ngModel.$viewValue = value;
 
               angular.forEach(ngModel.$parsers, function(fn) {
                 value = fn(value);
               });
 
               if (ngModel.$modelValue !== value) {
+
+                if (ngModel.$dirty) {
+
+                  // rollback to pristine
+                  if (ngModel.$pristineValue === value) {
+                    ngModel.$setPristine();
+                    ngModel.$updatePristine();
+                  }
+                } else {
+
+                  // change to dirty
+                  ngModel.$pristineValue = ngModel.$modelValue;
+                  ngModel.$dirty = true;
+                  ngModel.$pristine = false;
+                  element.removeClass(PRISTINE_CLASS).addClass(DIRTY_CLASS);
+                  parentForm.$setDirty();
+                }
+
                 ngModel.$modelValue = value;
                 ngModelSet(scope, value);
                 angular.forEach(ngModel.$viewChangeListeners, function(listener) {
@@ -170,20 +163,10 @@
               }
             };
             
-
-            // decorating $render
-            var $render = angular.noop;
-            Object.defineProperty(ngModel,'$render',{
-              set: function $renderSetter(fn) {
-                $render = fn;
-              },
-              get: function() {
-                return function $renderGetter() {
-                  ngModel.$pristineValue = ngModel.$viewValue;
-                  $render();
-                };
-              }
-            });
+            ngModel.$formatters.push = function initPristine(value){
+              ngModel.$pristineValue = ngModel.$modelValue;
+              return value;
+            };
           }
         };
       }
