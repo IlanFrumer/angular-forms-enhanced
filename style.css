@@ -1,0 +1,65 @@
+body{
+  color: #333;
+}
+
+.info > div{
+  border: 1px dashed #ccc;
+  text-align: center;
+  padding: 5px;
+}
+
+.title {
+  text-align: center;
+  text-decoration: underline;
+}
+
+.title h1{
+  font-weight: bolder;
+  text-shadow: 3px 2px 5px #999;
+}
+
+
+div.ng-pristine,
+tr.ng-pristine,
+input.ng-pristine {
+   background: #eee;
+}
+
+div.ng-dirty,
+tr.ng-dirty,
+input.ng-dirty{
+   background: #ddd;
+}
+
+div.ng-dirty ,
+input.ng-dirty ,
+td.ng-dirty {
+  font-weight: bolder; 
+}
+
+
+td,th{
+  text-align: center;
+}
+
+
+tr:last-of-type{
+  background: #333;
+  color: white;
+}
+
+.rtl {
+  direction: rtl !important;
+}
+
+.input-group {
+  /*width: 100%;*/
+}
+
+h3{
+  font-style: italic;
+}
+
+table {
+  table-layout:fixed;
+}
