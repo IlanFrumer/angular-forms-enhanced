@@ -20,6 +20,12 @@
           <div class="title">
             <h1>Angular forms enhanced!</h1>
           </div>
+          <hr/>
+          <div class="info">
+            <div class="ng-pristine">Pristine</div>
+            <div class="ng-dirty">Dirty</div>
+          </div>
+          <hr/>
           <h3>Plain input:</h3>
           <div class="input-group">
             <input type="text" 
@@ -30,7 +36,7 @@
           <h3>Input with form ($revert):</h3>
           <div>
             <div class="input-group" ng-form="oneForm">
-              <input type="text" 
+              <input type="email" 
                      name="person"
                      ng-model="person"
                      class="form-control">

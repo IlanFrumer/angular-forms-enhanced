@@ -9,8 +9,7 @@
   var PRISTINE_CLASS = 'ng-pristine',
       DIRTY_CLASS = 'ng-dirty';
 
-  var noop = angular.noop,
-      isUndefined = angular.isUndefined;
+  var noop = angular.noop;
 
   var nullFormCtrl = {
     $addControl: noop,
@@ -100,6 +99,35 @@
             var ngModel = ctrl[0],
                 parentForm = ctrl[1] || nullFormCtrl;
 
+            var $original = (function () {
+              var $value = null,
+                  $isEmpty = true;
+              return {
+                get: function() {
+                  return $value;
+                },
+                set: function(val) {
+                  if (ngModel.$pristine) {
+                    $value = ngModel.$modelValue;
+                    $isEmpty = ngModel.$isEmpty($value);
+                  }
+                  // let value pass in $formatters
+                  return val;
+                },
+                equals: function(val) {
+                  if(ngModel.$invalid) {
+                    return false;
+                  } else if($isEmpty) {
+                    return ngModel.$isEmpty(val);
+                  } else {
+                    return angular.equals($value,val);
+                  }
+                }
+              };
+            }());
+
+            ngModel.$formatters.unshift($original.set);
+
             // new method
 
             ngModel.$updatePristine = function() {
@@ -109,7 +137,7 @@
             // new method
 
             ngModel.$revert = function() {
-              ngModelSet(scope, ngModel.$pristineValue);
+              ngModelSet(scope, $original.get());
             };
 
             // wrap
@@ -117,7 +145,7 @@
             
             ngModel.$setPristine = function() {
               $setPristine.call(ngModel);
-              ngModel.$pristineValue = ngModel.$modelValue;
+              $original.set();
             };
 
             // monkey patching $setViewValue
@@ -130,23 +158,18 @@
                 value = fn(value);
               });
 
-
               if (ngModel.$modelValue !== value) {
-
 
                 ngModel.$modelValue = value;
 
                 if (ngModel.$dirty) {
-
                   // rollback to pristine
-                  if (ngModel.$pristineValue === value) {
+                  if ($original.equals(value)) {
                     ngModel.$setPristine();
                     ngModel.$updatePristine();
                   }
-                
                 } else {
-
-                  if(ngModel.$pristineValue !== value) {
+                  if(!$original.equals(value)) {
                     // change to dirty
                     ngModel.$dirty = true;
                     ngModel.$pristine = false;
@@ -165,12 +188,6 @@
                 });
               }
             };
-            
-            ngModel.$formatters.push(function initPristine(value){
-
-              ngModel.$pristineValue = isUndefined(ngModel.$modelValue) ? '' : ngModel.$modelValue;
-              return value;
-            });
           }
         };
       }

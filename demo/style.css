@@ -2,6 +2,12 @@ body{
   color: #333;
 }
 
+.info > div{
+  border: 1px dashed #ccc;
+  text-align: center;
+  padding: 5px;
+}
+
 .title {
   text-align: center;
   text-decoration: underline;
@@ -12,26 +18,34 @@ body{
   text-shadow: 3px 2px 5px #999;
 }
 
-tr.ng-pristine{
+
+div.ng-pristine,
+tr.ng-pristine,
+input.ng-pristine {
    background: #eee;
 }
 
-tr.ng-dirty{
+div.ng-dirty,
+tr.ng-dirty,
+input.ng-dirty{
    background: #ddd;
 }
+
+div.ng-dirty ,
+input.ng-dirty ,
+td.ng-dirty {
+  font-weight: bolder; 
+}
+
 
 td,th{
   text-align: center;
 }
 
 
-input.ng-dirty,
-td.ng-dirty{
-  font-weight: bolder; 
-}
-
 tr:last-of-type{
-  background: #bbb;
+  background: #333;
+  color: white;
 }
 
 .rtl {
