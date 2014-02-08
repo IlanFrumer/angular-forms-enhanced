@@ -5,6 +5,7 @@ app.controller('MainCtrl', function($scope) {
     
     { key : "help" , en : "Help" , he: "עזרה"},
     { key : "want" , en : "Want" , he: "רוצה"},
+    { key : "name" , en : "Name" , he: "שם"},
     { key : "email" , en : "Email" }
   ]
 
@@ -40,7 +41,7 @@ app.directive("contenteditable", function() {
         
         // view -> DOM
         ngModel.$render = function() {
-          element.html(ngModel.$viewValue);
+          element.html(ngModel.$viewValue || '');
         };
       }
     }

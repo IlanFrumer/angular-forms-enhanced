@@ -36,16 +36,16 @@
               form.$controls = [];
               
               form.$addControl = function(control) {
-                form.$controls.push(control);
                 $addControl(control);
+                form.$controls.push(control);
               };
 
               form.$removeControl = function(control) {
+                $removeControl(control);
                 var index = form.$controls.indexOf(control);
                 if (index >= 0) {
                   form.$controls.splice(index, 1);
                 }
-                $removeControl(control);
               };
 
               // new method
@@ -56,10 +56,21 @@
                   }
                 }
                 form.$setPristine();
-                form.$updatePristine();
               };
                 
-              // new method
+              // override $setPristine
+
+              form.$setPristine = function() {
+                
+                element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
+                form.$dirty = false;
+                form.$pristine = true;
+
+                angular.forEach(form.$controls, function(control) {
+                  control.$setPristine();
+                });
+                parentForm.$updatePristine();
+              };
 
               form.$updatePristine = function() {
                 for (var i = 0; i < form.$controls.length; i+=1) {
@@ -67,12 +78,12 @@
                     return;
                   }
                 }
-       
-                form.$setPristine();
-       
-                if (parentForm) {
-                  parentForm.$updatePristine();
-                }
+
+                element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
+                form.$dirty = false;
+                form.$pristine = true;
+
+                parentForm.$updatePristine();
               };
             }
           };
@@ -128,27 +139,34 @@
 
             ngModel.$formatters.unshift($original.set);
 
-            // new method
-
-            ngModel.$updatePristine = function() {
-              parentForm.$updatePristine();
+            var updateModel = function(value) {
+              ngModelSet(scope, value);
+              angular.forEach(ngModel.$viewChangeListeners, function(listener) {
+                try {
+                  listener();
+                } catch(e) {
+                  $exceptionHandler(e);
+                }
+              });
             };
 
             // new method
 
             ngModel.$revert = function() {
-              ngModelSet(scope, $original.get());
+              updateModel($original.get());
             };
 
-            // wrap
-            var $setPristine = ngModel.$setPristine;
+            // override $setPristine
             
             ngModel.$setPristine = function() {
-              $setPristine.call(ngModel);
+              ngModel.$dirty = false;
+              ngModel.$pristine = true;
+              element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
               $original.set();
+              parentForm.$updatePristine();
             };
 
-            // monkey patching $setViewValue
+            // override $setViewValue
 
             ngModel. $setViewValue = function(value) {
 
@@ -166,7 +184,6 @@
                   // rollback to pristine
                   if ($original.equals(value)) {
                     ngModel.$setPristine();
-                    ngModel.$updatePristine();
                   }
                 } else {
                   if(!$original.equals(value)) {
@@ -178,14 +195,7 @@
                   }
                 }
 
-                ngModelSet(scope, value);
-                angular.forEach(ngModel.$viewChangeListeners, function(listener) {
-                  try {
-                    listener();
-                  } catch(e) {
-                    $exceptionHandler(e);
-                  }
-                });
+                updateModel(value);
               }
             };
           }
@@ -195,5 +205,3 @@
   }]);
 
 }(angular));
-
-
