@@ -52,7 +52,7 @@
               form.$revert = function () {
                 for (var i = 0; i < form.$controls.length; i+=1) {
                   if (form.$controls[i].$dirty) {
-                    form.$controls[i].$revert();
+                    form.$controls[i].$revert(true);
                   }
                 }
                 form.$setPristine();
@@ -60,15 +60,17 @@
                 
               // override $setPristine
 
-              form.$setPristine = function() {
+              form.$setPristine = function(skip) {
                 
                 element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
                 form.$dirty = false;
                 form.$pristine = true;
 
-                angular.forEach(form.$controls, function(control) {
-                  control.$setPristine();
-                });
+                if(!skip) {
+                  angular.forEach(form.$controls, function(control) {
+                    control.$setPristine();
+                  });
+                }
                 parentForm.$updatePristine();
               };
 
@@ -78,12 +80,7 @@
                     return;
                   }
                 }
-
-                element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
-                form.$dirty = false;
-                form.$pristine = true;
-
-                parentForm.$updatePristine();
+                form.$setPristine(true);
               };
             }
           };
@@ -152,8 +149,16 @@
 
             // new method
 
-            ngModel.$revert = function() {
-              updateModel($original.get());
+            ngModel.$revert = function(skip) {
+              if (!$original.equals(ngModel.$modelValue)) {
+                if (!skip) {
+                  ngModel.$dirty = false;
+                  ngModel.$pristine = true;
+                  element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
+                  parentForm.$updatePristine();
+                }
+                updateModel($original.get());
+              }
             };
 
             // override $setPristine
