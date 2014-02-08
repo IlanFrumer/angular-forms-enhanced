@@ -5,6 +5,8 @@ app.controller('MainCtrl', function($scope) {
     
     { key : "help" , en : "Help" , he: "עזרה"},
     { key : "want" , en : "Want" , he: "רוצה"},
+    { key : "like" , en : "Like" , he: "אוהב"},
+    { key : "greeting" , en : "Hello" , he: "שלום"},
     { key : "email" , en : "Email" }
   ]
 
