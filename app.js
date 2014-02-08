@@ -40,7 +40,7 @@ app.directive("contenteditable", function() {
         
         // view -> DOM
         ngModel.$render = function() {
-          element.html(ngModel.$viewValue);
+          element.html(ngModel.$viewValue || '');
         };
       }
     }
