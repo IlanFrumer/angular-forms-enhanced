@@ -14,7 +14,6 @@ app.controller('MainCtrl', function($scope) {
   
   $scope.save = function(item, form){
     form.$setPristine();
-    form.$updatePristine();
     console.log("saved all");
   }
 
